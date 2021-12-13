@@ -11,7 +11,7 @@ const {
 } = require("../controllers/productController");
 
 
-router.route("/products").get(getProducts);
+router.route("/product").get(getProducts);
 router.route("/admin/products/:id").get(getSingleProduct);
 router.route("/admin/products/:id").put(updateProduct);
 router.route("/admin/products/:id").delete(deleteProduct);

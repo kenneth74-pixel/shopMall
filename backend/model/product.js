@@ -12,7 +12,7 @@ const productschema = new mongoose.Schema({
     price:{
         type: String,
         required:true,
-        maxlength:[6, 'product price can not exceed 5 charracters'],
+        maxlength:[10, 'product price can not exceed 10 charracters'],
         default:0.00
     },
     description:{
@@ -41,7 +41,7 @@ const productschema = new mongoose.Schema({
         enum:{
             values:[
                 'Electronics',
-                'Camera',
+                'Cameras',
                 'Laptops',
                 'Accessories',
                 'Headphones',

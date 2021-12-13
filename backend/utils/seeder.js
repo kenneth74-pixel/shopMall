@@ -1,22 +1,24 @@
 const Product = require('../model/product')
-const doenv =require('doenv')
+const dotenv =require('dotenv')
 const connectDatabase = require('../config/database')
 
-const Product = require('../data/product.json')
-const product = require('../model/product')
+const products = require('../data/product.json')
+const { connect } = require('mongoose')
+
 
 
 //  setting dotenv file
-dotenv.coonfig({  path: 'backend/config/config.env' })
+dotenv.config({  path: 'backend/config/config.env' })
+connectDatabase();
 
 const seedProduct = async() =>{
     try{
-        await product.deleteMany();
+        await Product.deleteMany();
         console.log('products are deleted');
-        await product.insertMany(products)
+        await Product.insertMany(products)
         console.log('all products are added.');
         process.exit();
-    } catch(e){
+    } catch(error){
         console.log(error.message);
         process.exit();
     }
