@@ -10,6 +10,7 @@ const APIFeatures = require('../utils/apifeatures');
 
 exports.newProduct = catchAsyncError (async(req,res,next) =>{
 
+    req.body.user = req.user.id;
     const product = await products.create(req.body);
 
     res.status(201).json({
@@ -19,31 +20,35 @@ exports.newProduct = catchAsyncError (async(req,res,next) =>{
 })
 
 // Get all products => /admin/api/v1/products?keyword=headphones
-exports.getProducts = catchAsyncError (async(req,res) =>{
+exports.getProducts = catchAsyncError (async(req,res,next) =>{
 
-    const resultPerPage = 4;
-    const productCounnt = await product.countDocuments()
+    const resPerPage = 4;
+    const productsCount = await products.countDocuments();
 
+    const apiFeatures = new APIFeatures(products.find(), req.query)
+        .search()
+        .filter()
 
-    const apifeatures = new APIFeatures(product.find(),req.query)
-    .search()
-    .filter()
-    .paginations(resultPerPage);
+    let product = await apiFeatures.query;
+    let filteredProductsCount = products.length;
 
-    const products = await apifeatures.query;
+    apiFeatures.pagination(resPerPage)
+    
 
 
     res.status(200).json({
-        success:true,
-        count:products.length,
-        productCounnt,
-        products
+        success: true,
+        productsCount,
+        resPerPage,
+        filteredProductsCount,
+        product
     })
+
 })
 
 // Get product details => /admin/api/v1/:id
 exports.getSingleProduct = catchAsyncError (async(req, res, next) =>{
-    const product = await product.findById(req.params.id);
+    const product = await products.findById(req.params.id);
 
     if(!product){
         return next(new ErrorHandler('product not found',404));

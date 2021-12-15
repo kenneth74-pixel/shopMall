@@ -1,5 +1,3 @@
-const { Message } = require('@material-ui/icons')
-const { privateDecrypt } = require('crypto')
 const mongoose = require('mongoose')
 
 const productschema = new mongoose.Schema({
@@ -86,10 +84,15 @@ const productschema = new mongoose.Schema({
             }
         }
     ],
+    user:{
+        type:mongoose.Schema.ObjectId,
+        ref:'User',
+        required:true
+    },
     createdAt:{
         type:Date,
         default:Date.now
     }
 })
 
-module.exports = mongoose.model('product',productschema)
+module.exports = mongoose.model('Product',productschema)
