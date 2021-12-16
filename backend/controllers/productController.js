@@ -95,3 +95,44 @@ exports.deleteProduct = catchAsyncError (async (req, res) => {
 
     })
 })
+
+// create new reviews => /api/v1/review
+exports.createProductReview = catchAsyncError(async (req, res, next) => {
+
+    const { rating, comment, productId } = req.body;
+
+    const reviews = {
+        user: req.user._id,
+        name: req.body.name,
+        rating:Number(rating),
+        comment
+    }
+
+    const product = await products.findById(productId);
+
+    const isReviewed = product.reviews.find(
+        r => r.user.toString() === req.user._id.toString()
+    )
+
+    if (isReviewed) {
+        product.reviews.forEach(review => {
+            if (reviews.user.toString() === req.user._id.toString()) {
+                reviews.comment = comment;
+                reviews.rating = rating;
+            }
+        })
+
+    } else {
+        product.reviews.push(numOfReviews);
+        product.numOfReviews = product.reviews.length
+    }
+
+    product.ratings = product.reviews.reduce((acc, item) => item.rating + acc, 0) / product.reviews.length
+
+    await product.save({ validateBeforeSave: false });
+
+    res.status(200).json({
+        success: true
+    })
+
+})
